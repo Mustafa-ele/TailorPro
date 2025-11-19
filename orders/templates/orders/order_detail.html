@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- orders/templates/orders/order_detail.html -->
 <!DOCTYPE html>
 <html>
@@ -81,3 +82,88 @@
 </div>
 </body>
 </html>
+=======
+<!-- orders/templates/orders/order_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Order Detail — TailorPro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary"><div class="container-fluid"><a class="navbar-brand" href="/">TailorPro</a></div></nav>
+<div class="container my-4">
+  <h3>Order: {{ order.order_number }}</h3>
+  <p><strong>Customer:</strong> {{ order.customer.name }} ({{ order.customer.phone }})</p>
+  <p><strong>Cloth:</strong> {{ order.cloth_type }}</p>
+  <p><strong>Delivery:</strong> {{ order.delivery_date }}</p>
+  <form method="post" class="mb-3">
+  {% csrf_token %}
+  <label><strong>Status:</strong></label>
+  <select name="status" class="form-select w-auto d-inline-block">
+      <option value="RECEIVED"   {% if order.status == 'RECEIVED' %}selected{% endif %}>Received</option>
+      <option value="CUTTING"    {% if order.status == 'CUTTING' %}selected{% endif %}>Cutting</option>
+      <option value="STITCHING"  {% if order.status == 'STITCHING' %}selected{% endif %}>Stitching</option>
+      <option value="READY"      {% if order.status == 'READY' %}selected{% endif %}>Ready</option>
+      <option value="DELIVERED"  {% if order.status == 'DELIVERED' %}selected{% endif %}>Delivered</option>
+      <option value="CANCELLED"  {% if order.status == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
+  </select>
+
+  <button type="submit" name="update_status" class="btn btn-primary btn-sm">
+      Update
+  </button>
+</form>
+
+  <p><strong>Total:</strong> {{ order.total_amount }} | <strong>Advance:</strong> {{ order.advance_paid }} | <strong>Balance:</strong> {{ order.balance }}</p>
+
+  <a class="btn btn-success" href="{{ wa_link }}" target="_blank">Send WhatsApp</a>
+
+  <hr>
+<h5>Measurements</h5>
+<pre class="border p-3 bg-light">{{ order.measurement_data }}</pre>
+
+
+  <hr>
+  <h5>Record payment</h5>
+<form method="post">{% csrf_token %}
+  
+  <div class="mb-3">
+    <label>Amount</label>
+    <input name="amount" class="form-control" type="number" step="0.01" required>
+  </div>
+
+  <div class="mb-3">
+    <label>Payment Method</label>
+    <select name="method" class="form-control" required>
+      <option value="CASH">Cash</option>
+      <option value="UPI">UPI</option>
+      <option value="CARD">Card</option>
+      <option value="BANK">Bank Transfer</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Transaction ID (optional)</label>
+    <input name="transaction_id" class="form-control" placeholder="For UPI/Card/Bank">
+  </div>
+
+  <button name="mark_paid" class="btn btn-primary" type="submit">Add Payment</button>
+</form>
+
+
+  <hr>
+  <h5>Payments for this order</h5>
+  <ul>
+    {% for p in order.payments.all %}
+      <li>{{ p.amount }} — {{ p.method }} — {{ p.created_at }}</li>
+    {% empty %}
+      <li>No payments yet</li>
+    {% endfor %}
+  </ul>
+
+  <a class="btn btn-secondary" href="/orders/">Back to orders</a>
+</div>
+</body>
+</html>
+>>>>>>> 25ebfac29b52da4c94d0490e2f97baf08cb66efc

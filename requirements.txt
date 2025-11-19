@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 Django==5.0.3
 gunicorn
 djangorestframework
+=======
+Django==5.2.8
+gunicorn
+whitenoise
+psycopg2-binary
+>>>>>>> 25ebfac29b52da4c94d0490e2f97baf08cb66efc
