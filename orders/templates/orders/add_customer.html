@@ -1,0 +1,128 @@
+<!-- orders/templates/orders/add_customer.html -->
+ {% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Add Customer — TailorPro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">TailorPro</a>
+  </div>
+</nav>
+
+<div class="container my-4">
+  <h3>Add Customer</h3>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Name -->
+    <div class="mb-3">
+      <label class="form-label">Customer Name</label>
+      <input type="text" id="name" name="name" class="form-control">
+      <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="startDictation('name')">🎤 Speak</button>
+      <button type="button" class="btn btn-danger" onclick="stopDictation()">⛔ Stop</button>
+
+    </div>
+
+    <!-- Phone -->
+    <div class="mb-3">
+      <label class="form-label">Phone</label>
+      <input type="text" id="phone" name="phone" class="form-control">
+      <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="startDictation('phone')">🎤 Speak</button>
+      <button type="button" class="btn btn-danger" onclick="stopDictation()">⛔ Stop</button>
+
+    </div>
+
+    <!-- Address -->
+    <div class="mb-3">
+      <label class="form-label">Address</label>
+      <textarea id="address" name="address" class="form-control"></textarea>
+      <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="startDictation('address')">🎤 Speak</button>
+      <button type="button" class="btn btn-danger" onclick="stopDictation()">⛔ Stop</button>
+
+    </div>
+
+    <!-- Notes -->
+    <div class="mb-3">
+      <label class="form-label">Notes</label>
+      <textarea id="notes" name="notes" class="form-control"></textarea>
+      <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="startDictation('notes')">🎤 Speak</button>
+      <button type="button" class="btn btn-danger" onclick="stopDictation()">⛔ Stop</button>
+
+    </div>
+
+    <button class="btn btn-success" type="submit">Save</button>
+    <a class="btn btn-secondary" href="/">Cancel</a>
+  </form>
+</div>
+
+<!-- Voice Script -->
+<script>
+let recognition;
+let isListening = false;
+let activeField = null;
+
+// Initialize SpeechRecognition once
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.interimResults = true;
+    recognition.continuous = true;
+
+    recognition.onresult = function(event) {
+        let transcript = "";
+        for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+
+        if (activeField) {
+            document.getElementById(activeField).value = transcript;
+        }
+    };
+
+    recognition.onend = function() {
+        // Only restart if listening is ON
+        if (isListening) {
+            recognition.start();
+        }
+    };
+}
+
+function startDictation(fieldId) {
+    if (!SpeechRecognition) {
+        alert("Speech recognition not supported.");
+        return;
+    }
+
+    activeField = fieldId;
+
+    if (!isListening) {
+        isListening = true;
+        recognition.start();
+        console.log("🎤 Listening started…");
+    }
+}
+
+function stopDictation() {
+    if (isListening) {
+        isListening = false;
+        recognition.stop();
+        console.log("🛑 Listening stopped.");
+    }
+    activeField = null;
+}
+</script>
+
+
+
+</body>
+</html>
